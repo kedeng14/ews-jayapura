@@ -119,8 +119,8 @@
     let radarLayer;
     let satelitRegion5;
 
-    // 1. Inisialisasi Peta Leaflet
-    const map = L.map('map').setView([-2.573000, 140.485000], 9);
+    // 1. Inisialisasi Peta Leaflet (Titik Center Baru Disesuaikan Presisi ke Tengah Kab. Jayapura)
+    const map = L.map('map').setView([-2.900000, 139.900000], 9);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
@@ -144,17 +144,12 @@
         }
     }
 
-    // =========================================================================
-    // FITUR: FUNGSI PENGUNCI ZONA WAKTU (SELALU WIT / ASIA/JAYAPURA)
-    // =========================================================================
     function getWaktuWIT() {
         const now = new Date();
-        // Paksa konversi ke Waktu Jayapura terlepas dari settingan komputer (UTC/WIB)
         const witString = now.toLocaleString("en-US", { timeZone: "Asia/Jayapura" });
         return new Date(witString); 
     }
 
-    // Fungsi Format Waktu Pembaruan 
     function perbaruiLabelWaktu() {
         const now = getWaktuWIT(); 
         const jam = String(now.getHours()).padStart(2, '0');
@@ -170,7 +165,6 @@
     
     perbaruiLabelWaktu();
 
-    // Auto-refresh URL gambar tiap 5 menit (300.000 ms)
     setInterval(() => {
         const ts = new Date().getTime();
         if (radarLayer) radarLayer.setUrl("https://stamet-sentani.bmkg.go.id/radar/sidarma?t=" + ts);
@@ -178,7 +172,7 @@
         perbaruiLabelWaktu();
     }, 300000);
 
-    // Load Data GeoJSON Kecamatan
+    // Load Data GeoJSON Kecamatan + Auto Center ke Batas Wilayah
     fetch('jyp kec.geojson')
         .then(res => res.json())
         .then(data => {
@@ -201,7 +195,11 @@
                     });
                 }
             }).addTo(map);
+            
             geojsonLayer.bringToFront();
+            
+            // Otomatis mengunci posisi tengah seluruh poligon kecamatan Jayapura
+            map.fitBounds(geojsonLayer.getBounds());
         });
 
     function setMode(mode) {
@@ -224,7 +222,7 @@
     }
 
     function setInitialTime() {
-        const now = getWaktuWIT(); // Gunakan waktu WIT untuk input otomatis
+        const now = getWaktuWIT(); 
         document.getElementById('waktuRilis').value = formatTimeInput(now);
         
         const berlaku = new Date(now.getTime() + 10 * 60000);
@@ -244,7 +242,7 @@
         const rilisVal = document.getElementById('waktuRilis').value;
         if (!rilisVal) return;
         const [h, m] = rilisVal.split(':').map(Number);
-        const berlaku = getWaktuWIT(); // Patokan kalender dari WIT
+        const berlaku = getWaktuWIT();
         berlaku.setHours(h, m + 10, 0, 0);
         document.getElementById('waktuBerlaku').value = formatTimeInput(berlaku);
         updateEstimasiSelesai();
@@ -254,7 +252,7 @@
         const berlakuVal = document.getElementById('waktuBerlaku').value;
         if (!berlakuVal) return;
         const [h, m] = berlakuVal.split(':').map(Number);
-        const berlaku = getWaktuWIT(); // Patokan kalender dari WIT
+        const berlaku = getWaktuWIT();
         berlaku.setHours(h, m, 0, 0);
         const selesai = new Date(berlaku.getTime() + 120 * 60000);
         document.getElementById('waktuSelesai').value = formatTimeInput(selesai);
@@ -277,7 +275,6 @@
 
         const bulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         
-        // Memastikan acuan kalender mengikuti tanggal di wilayah Jayapura
         const dateRilis = getWaktuWIT();
         if (rilisStr) {
             const [h, m] = rilisStr.split(':').map(Number);
