@@ -144,9 +144,19 @@
         }
     }
 
-    // Fungsi Format Waktu Pembaruan (Animasi Flash Hijau)
-    function perbaruiLabelWaktu() {
+    // =========================================================================
+    // FITUR: FUNGSI PENGUNCI ZONA WAKTU (SELALU WIT / ASIA/JAYAPURA)
+    // =========================================================================
+    function getWaktuWIT() {
         const now = new Date();
+        // Paksa konversi ke Waktu Jayapura terlepas dari settingan komputer (UTC/WIB)
+        const witString = now.toLocaleString("en-US", { timeZone: "Asia/Jayapura" });
+        return new Date(witString); 
+    }
+
+    // Fungsi Format Waktu Pembaruan 
+    function perbaruiLabelWaktu() {
+        const now = getWaktuWIT(); 
         const jam = String(now.getHours()).padStart(2, '0');
         const menit = String(now.getMinutes()).padStart(2, '0');
         const detik = String(now.getSeconds()).padStart(2, '0');
@@ -154,12 +164,10 @@
         const label = document.getElementById('labelWaktuUpdate');
         label.innerText = `Terakhir ditarik: ${jam}:${menit}:${detik} WIT`;
         
-        // Efek visual kedip saat data baru masuk
         label.style.color = "#ffffff";
         setTimeout(() => { label.style.color = "#00ff66"; }, 500);
     }
     
-    // Panggil saat aplikasi pertama kali dimuat
     perbaruiLabelWaktu();
 
     // Auto-refresh URL gambar tiap 5 menit (300.000 ms)
@@ -167,8 +175,6 @@
         const ts = new Date().getTime();
         if (radarLayer) radarLayer.setUrl("https://stamet-sentani.bmkg.go.id/radar/sidarma?t=" + ts);
         if (satelitRegion5) satelitRegion5.setUrl("https://stamet-sentani.bmkg.go.id/radar/satellite-animation.gif?t=" + ts);
-        
-        // Perbarui tulisan waktu terakhir ditarik
         perbaruiLabelWaktu();
     }, 300000);
 
@@ -218,10 +224,12 @@
     }
 
     function setInitialTime() {
-        const now = new Date();
+        const now = getWaktuWIT(); // Gunakan waktu WIT untuk input otomatis
         document.getElementById('waktuRilis').value = formatTimeInput(now);
+        
         const berlaku = new Date(now.getTime() + 10 * 60000);
         document.getElementById('waktuBerlaku').value = formatTimeInput(berlaku);
+        
         const selesai = new Date(berlaku.getTime() + 120 * 60000);
         document.getElementById('waktuSelesai').value = formatTimeInput(selesai);
     }
@@ -236,7 +244,7 @@
         const rilisVal = document.getElementById('waktuRilis').value;
         if (!rilisVal) return;
         const [h, m] = rilisVal.split(':').map(Number);
-        const berlaku = new Date();
+        const berlaku = getWaktuWIT(); // Patokan kalender dari WIT
         berlaku.setHours(h, m + 10, 0, 0);
         document.getElementById('waktuBerlaku').value = formatTimeInput(berlaku);
         updateEstimasiSelesai();
@@ -246,7 +254,7 @@
         const berlakuVal = document.getElementById('waktuBerlaku').value;
         if (!berlakuVal) return;
         const [h, m] = berlakuVal.split(':').map(Number);
-        const berlaku = new Date();
+        const berlaku = getWaktuWIT(); // Patokan kalender dari WIT
         berlaku.setHours(h, m, 0, 0);
         const selesai = new Date(berlaku.getTime() + 120 * 60000);
         document.getElementById('waktuSelesai').value = formatTimeInput(selesai);
@@ -269,7 +277,8 @@
 
         const bulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         
-        const dateRilis = new Date();
+        // Memastikan acuan kalender mengikuti tanggal di wilayah Jayapura
+        const dateRilis = getWaktuWIT();
         if (rilisStr) {
             const [h, m] = rilisStr.split(':').map(Number);
             dateRilis.setHours(h, m, 0, 0);
