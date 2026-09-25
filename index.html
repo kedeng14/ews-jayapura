@@ -164,7 +164,7 @@
     <h3 style="margin: 5px 0 0 0;">Format Teks Siap Rilis:</h3>
     <textarea id="teksHasil" readonly></textarea>
     
-    <!-- Tombol Salin Teks Dipindah Tepat di Bawah Textarea -->
+    <!-- Tombol Salin Teks Tepat di Bawah Textarea -->
     <button onclick="copyToClipboard()" class="action-btn btn-copy">📋 Salin Teks Peringatan</button>
 </div>
 
@@ -423,8 +423,10 @@ Prakirawan - BMKG Sentani https://bmkg.go.id`;
 
     setInitialTime();
 
+    // Waktu terus berjalan otomatis realtime setiap 30 detik (bahkan saat distrik sudah dipilih),
+    // KECUALI jika pengguna pernah mengedit input jam secara manual.
     setInterval(() => {
-        if (!isManualTime && wilayahUtama.length === 0 && wilayahLuas.length === 0) {
+        if (!isManualTime) {
             setInitialTime();
         }
     }, 30000);
