@@ -211,7 +211,7 @@
             geojsonLayer = L.geoJSON(data, {
                 style: () => ({ fillColor: '#3186cc', weight: 1.5, color: '#ffffff', fillOpacity: 0.3 }),
                 onEachFeature: (feature, layer) => {
-                    const namaKec = feature.properties.KECAMATAN;
+                    const namaKec = feature.properties.NAME_3 || feature.properties.KECAMATAN || "Tanpa Nama";
                     layer.bindTooltip(namaKec);
                     
                     layer.on('click', () => {
@@ -240,7 +240,7 @@
 
     function updateMapStyles() {
         geojsonLayer.eachLayer(layer => {
-            const namaKec = layer.feature.properties.KECAMATAN;
+            const namaKec = layer.feature.properties.NAME_3 || layer.feature.properties.KECAMATAN || "Tanpa Nama";
             if (wilayahUtama.includes(namaKec)) {
                 layer.setStyle({ fillColor: 'red', fillOpacity: 0.7, color: 'black' });
             } else if (wilayahLuas.includes(namaKec)) {
