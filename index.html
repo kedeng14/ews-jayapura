@@ -3,142 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>EWS BMKG Sentani - WebGIS</title>
-
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
     <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            display: flex;
-            gap: 20px;
-            background: #121212;
-            color: #fff;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        #map {
-            width: 60%;
-            height: 92vh;
-            border-radius: 8px;
-        }
-
-        #panel {
-            width: 40%;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        textarea {
-            width: 100%;
-            height: 230px;
-            background: #1e1e1e;
-            color: #00ff66;
-            border: 1px solid #444;
-            border-radius: 5px;
-            padding: 10px;
-            font-family: monospace;
-            font-size: 13px;
-            box-sizing: border-box;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .mode-btn {
-            padding: 8px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            font-weight: bold;
-            width: 48%;
-        }
-
-        .btn-utama {
-            background: #ff4d4d;
-            color: white;
-        }
-
-        .btn-luas {
-            background: #ffcc00;
-            color: black;
-        }
-
-        .active {
-            outline: 3px solid white;
-        }
-
-        .grid-time {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-        }
-
-        input[type="time"],
-        select {
-            padding: 6px;
-            border-radius: 5px;
-            border: 1px solid #444;
-            background: #222;
-            color: white;
-            width: 100%;
-            box-sizing: border-box;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        label {
-            font-size: 12px;
-            color: #ccc;
-        }
-
-        .action-btn {
-            padding: 8px;
-            background: #333;
-            color: white;
-            border: 1px solid #555;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .action-btn:hover {
-            background: #444;
-        }
-
-        .btn-copy {
-            background: #008cba;
-            border: none;
-        }
-
-        .btn-copy:hover {
-            background: #007399;
-        }
-
-        .layer-box {
-            background: #1e1e1e;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #333;
-            font-size: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            transition: background 0.3s;
-        }
-
-        .layer-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .layer-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
+        body { margin: 0; padding: 20px; font-family: Arial, sans-serif; display: flex; gap: 20px; background: #121212; color: #fff; transition: background 0.3s, color 0.3s; }
+        #map { width: 60%; height: 92vh; border-radius: 8px; }
+        #panel { width: 40%; display: flex; flex-direction: column; gap: 10px; }
+        textarea { width: 100%; height: 230px; background: #1e1e1e; color: #00ff66; border: 1px solid #444; border-radius: 5px; padding: 10px; font-family: monospace; font-size: 13px; box-sizing: border-box; transition: background 0.3s, color 0.3s; }
+        .mode-btn { padding: 8px; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; width: 48%; }
+        .btn-utama { background: #ff4d4d; color: white; }
+        .btn-luas { background: #ffcc00; color: black; }
+        .active { outline: 3px solid white; }
+        .grid-time { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        input[type="time"], select { padding: 6px; border-radius: 5px; border: 1px solid #444; background: #222; color: white; width: 100%; box-sizing: border-box; transition: background 0.3s, color 0.3s; }
+        label { font-size: 12px; color: #ccc; }
+        .action-btn { padding: 8px; background: #333; color: white; border: 1px solid #555; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .action-btn:hover { background: #444; }
+        .btn-copy { background: #008cba; border: none; }
+        .btn-copy:hover { background: #007399; }
+        .layer-box { background: #1e1e1e; padding: 10px; border-radius: 5px; border: 1px solid #333; font-size: 12px; display: flex; flex-direction: column; gap: 8px; transition: background 0.3s; }
+        .layer-row { display: flex; justify-content: space-between; align-items: center; }
+        .layer-controls { display: flex; align-items: center; gap: 8px; }
+        
         .status-update {
             background: #2a2a2a;
             padding: 8px;
@@ -150,259 +36,104 @@
             justify-content: space-between;
             transition: background 0.3s;
         }
-
-        .waktu-teks {
-            font-weight: bold;
-            color: #00ff66;
-        }
+        .waktu-teks { font-weight: bold; color: #00ff66; }
 
         /* Style Khusus Mode Terang (Light Mode) */
-        body.light-mode {
-            background: #eef2f5;
-            color: #111;
-        }
-
-        body.light-mode .layer-box,
-        body.light-mode .status-update {
-            background: #ffffff;
-            border-color: #ccc;
-            color: #222;
-        }
-
-        body.light-mode textarea {
-            background: #ffffff;
-            color: #00802b;
-            border-color: #ccc;
-        }
-
-        body.light-mode input[type="time"],
-        body.light-mode select {
-            background: #ffffff;
-            color: #111;
-            border-color: #ccc;
-        }
-
-        body.light-mode label {
-            color: #555;
-        }
-
-        body.light-mode .action-btn {
-            background: #e0e0e0;
-            color: #111;
-            border-color: #bbb;
-        }
-
-        body.light-mode .action-btn:hover {
-            background: #d0d0d0;
-        }
-
-        body.light-mode .btn-copy {
-            background: #008cba;
-            color: #fff;
-        }
+        body.light-mode { background: #eef2f5; color: #111; }
+        body.light-mode .layer-box, 
+        body.light-mode .status-update { background: #ffffff; border-color: #ccc; color: #222; }
+        body.light-mode textarea { background: #ffffff; color: #00802b; border-color: #ccc; }
+        body.light-mode input[type="time"], 
+        body.light-mode select { background: #ffffff; color: #111; border-color: #ccc; }
+        body.light-mode label { color: #555; }
+        body.light-mode .action-btn { background: #e0e0e0; color: #111; border-color: #bbb; }
+        body.light-mode .action-btn:hover { background: #d0d0d0; }
+        body.light-mode .btn-copy { background: #008cba; color: #fff; }
 
         .btn-theme {
-            background: #333;
-            color: #fff;
-            border: 1px solid #555;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-            transition: all 0.3s;
+            background: #333; color: #fff; border: 1px solid #555;
+            padding: 5px 10px; border-radius: 5px; cursor: pointer;
+            font-size: 12px; font-weight: bold; transition: all 0.3s;
         }
-
-        body.light-mode .btn-theme {
-            background: #ffffff;
-            color: #111;
-            border-color: #ccc;
-        }
+        body.light-mode .btn-theme { background: #ffffff; color: #111; border-color: #ccc; }
     </style>
 </head>
-
-<!-- DEFAULT SEKARANG MODE TERANG -->
-<body class="light-mode">
+<body>
 
 <div id="map"></div>
 
 <div id="panel">
-
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2 style="margin: 0;">EWS BMKG Sentani</h2>
-
-        <!-- Teks tombol disesuaikan dengan mode awal -->
-        <button id="btnTheme" class="btn-theme" onclick="toggleTheme()">
-            🌙 Mode Gelap
-        </button>
+        <button id="btnTheme" class="btn-theme" onclick="toggleTheme()">☀️ Mode Terang</button>
     </div>
-
+    
     <!-- Kotak Indikator Waktu Update Data -->
     <div class="status-update">
         <span>Status Data Layer:</span>
-        <span id="labelWaktuUpdate" class="waktu-teks">
-            Memuat sinkronisasi awal...
-        </span>
+        <span id="labelWaktuUpdate" class="waktu-teks">Memuat sinkronisasi awal...</span>
     </div>
 
     <!-- Kontrol Layer Overlay Radar & Satelit Presisi -->
     <div class="layer-box">
-
         <div class="layer-row">
-            <span style="font-weight: bold; color: #00ff66;">
-                1. Radar Jayapura (CMAX):
-            </span>
-
+            <span style="font-weight: bold; color: #00ff66;">1. Radar Jayapura (CMAX):</span>
             <div class="layer-controls">
-                <input
-                    type="checkbox"
-                    id="chkRadar"
-                    checked
-                    onchange="toggleLayer(radarLayer, 'chkRadar')"
-                >
-
+                <input type="checkbox" id="chkRadar" checked onchange="toggleLayer(radarLayer, 'chkRadar')">
                 <label for="chkRadar">Tampil</label>
-
-                <input
-                    type="range"
-                    min="0.1"
-                    max="1"
-                    step="0.1"
-                    value="0.75"
-                    oninput="radarLayer.setOpacity(this.value)"
-                    style="width: 70px;"
-                >
+                <input type="range" min="0.1" max="1" step="0.1" value="0.75" oninput="radarLayer.setOpacity(this.value)" style="width: 70px;">
             </div>
         </div>
 
         <div class="layer-row">
-            <span style="font-weight: bold; color: #ffcc00;">
-                2. Satelit Region 5 (GIF):
-            </span>
-
+            <span style="font-weight: bold; color: #ffcc00;">2. Satelit Region 5 (GIF):</span>
             <div class="layer-controls">
-                <input
-                    type="checkbox"
-                    id="chkRegion5"
-                    checked
-                    onchange="toggleLayer(satelitRegion5, 'chkRegion5')"
-                >
-
+                <input type="checkbox" id="chkRegion5" checked onchange="toggleLayer(satelitRegion5, 'chkRegion5')">
                 <label for="chkRegion5">Tampil</label>
-
-                <input
-                    type="range"
-                    min="0.1"
-                    max="1"
-                    step="0.1"
-                    value="0.5"
-                    oninput="satelitRegion5.setOpacity(this.value)"
-                    style="width: 70px;"
-                >
+                <input type="range" min="0.1" max="1" step="0.1" value="0.5" oninput="satelitRegion5.setOpacity(this.value)" style="width: 70px;">
             </div>
         </div>
-
     </div>
 
     <div>
         <label>Jenis Peringatan:</label>
-
         <select id="jenisPeringatan" onchange="generateText()">
-            <option value="baru">
-                Peringatan Dini Cuaca (Awal)
-            </option>
-
-            <option value="update">
-                Update Peringatan Dini Cuaca
-            </option>
+            <option value="baru">Peringatan Dini Cuaca (Awal)</option>
+            <option value="update">Update Peringatan Dini Cuaca</option>
         </select>
     </div>
 
     <div>
-        <label>Mode Klik Peta:</label>
-        <br>
-
-        <button
-            id="btnUtama"
-            class="mode-btn btn-utama active"
-            onclick="setMode('utama')"
-        >
-            Wilayah Utama (Merah)
-        </button>
-
-        <button
-            id="btnLuas"
-            class="mode-btn btn-luas"
-            onclick="setMode('luas')"
-        >
-            Perluasan (Kuning)
-        </button>
+        <label>Mode Klik Peta:</label><br>
+        <button id="btnUtama" class="mode-btn btn-utama active" onclick="setMode('utama')">Wilayah Utama (Merah)</button>
+        <button id="btnLuas" class="mode-btn btn-luas" onclick="setMode('luas')">Perluasan (Kuning)</button>
     </div>
 
     <div class="grid-time">
-
         <div>
             <label>Waktu Rilis:</label>
-
-            <input
-                type="time"
-                id="waktuRilis"
-                onchange="updateWaktuOtomatis()"
-            >
+            <input type="time" id="waktuRilis" onchange="updateWaktuOtomatis()">
         </div>
-
         <div>
             <label>Waktu Berlaku:</label>
-
-            <input
-                type="time"
-                id="waktuBerlaku"
-                onchange="updateEstimasiSelesai()"
-            >
+            <input type="time" id="waktuBerlaku" onchange="updateEstimasiSelesai()">
         </div>
-
         <div>
             <label>Estimasi Selesai:</label>
-
-            <input
-                type="time"
-                id="waktuSelesai"
-                onchange="generateText()"
-            >
+            <input type="time" id="waktuSelesai" onchange="generateText()">
         </div>
-
     </div>
 
     <div style="display: flex; gap: 10px;">
-
-        <button
-            onclick="resetSelection()"
-            class="action-btn"
-            style="flex: 1;"
-        >
-            Reset Pilihan Peta
-        </button>
-
-        <button
-            onclick="copyToClipboard()"
-            class="action-btn btn-copy"
-            style="flex: 1;"
-        >
-            Salin Teks
-        </button>
-
+        <button onclick="resetSelection()" class="action-btn" style="flex: 1;">Reset Pilihan Peta</button>
+        <button onclick="copyToClipboard()" class="action-btn btn-copy" style="flex: 1;">Salin Teks</button>
     </div>
 
-    <h3 style="margin: 5px 0 0 0;">
-        Format Teks Siap Rilis:
-    </h3>
-
+    <h3 style="margin: 5px 0 0 0;">Format Teks Siap Rilis:</h3>
     <textarea id="teksHasil" readonly></textarea>
-
 </div>
 
 <script>
-
     let currentMode = 'utama';
     let wilayahUtama = [];
     let wilayahLuas = [];
@@ -410,733 +141,205 @@
     let radarLayer;
     let satelitRegion5;
 
-
-    // ============================================================
     // Toggle Tema Mode Terang / Gelap
-    // ============================================================
-
     function toggleTheme() {
-
         document.body.classList.toggle('light-mode');
-
-        const isLight =
-            document.body.classList.contains('light-mode');
-
-        document.getElementById('btnTheme').innerText =
-            isLight
-                ? '🌙 Mode Gelap'
-                : '☀️ Mode Terang';
+        const isLight = document.body.classList.contains('light-mode');
+        document.getElementById('btnTheme').innerText = isLight ? '🌙 Mode Gelap' : '☀️ Mode Terang';
     }
 
-
-    // ============================================================
     // 1. Inisialisasi Peta Leaflet
-    // ============================================================
+    const map = L.map('map').setView([-2.900000, 139.900000], 9);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
 
-    const map = L.map('map').setView(
-        [-2.900000, 139.900000],
-        9
-    );
+    const boundsRadarJayapura = [[-4.823000, 138.235000], [-0.323000, 142.735000]];
+    const boundsSatelitRegion5 = [[-15.394000, 129.963000], [5.348000, 150.005000]];
 
-    L.tileLayer(
-        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        {
-            attribution: '© OpenStreetMap contributors'
-        }
-    ).addTo(map);
+    radarLayer = L.imageOverlay("https://stamet-sentani.bmkg.go.id/radar/sidarma?t=" + new Date().getTime(), boundsRadarJayapura, {
+        opacity: 0.75, interactive: false
+    }).addTo(map);
 
-
-    const boundsRadarJayapura = [
-        [-4.823000, 138.235000],
-        [-0.323000, 142.735000]
-    ];
-
-    const boundsSatelitRegion5 = [
-        [-15.394000, 129.963000],
-        [5.348000, 150.005000]
-    ];
-
-
-    radarLayer = L.imageOverlay(
-        'https://stamet-sentani.bmkg.go.id/radar/sidarma?t='
-        + new Date().getTime(),
-        boundsRadarJayapura,
-        {
-            opacity: 0.75,
-            interactive: false
-        }
-    ).addTo(map);
-
-
-    satelitRegion5 = L.imageOverlay(
-        'https://stamet-sentani.bmkg.go.id/radar/satellite-animation.gif?t='
-        + new Date().getTime(),
-        boundsSatelitRegion5,
-        {
-            opacity: 0.50,
-            interactive: false
-        }
-    ).addTo(map);
-
+    satelitRegion5 = L.imageOverlay("https://stamet-sentani.bmkg.go.id/radar/satellite-animation.gif?t=" + new Date().getTime(), boundsSatelitRegion5, {
+        opacity: 0.50, interactive: false
+    }).addTo(map);
 
     function toggleLayer(layerObject, checkboxId) {
-
-        if (
-            document.getElementById(checkboxId).checked
-        ) {
-
+        if (document.getElementById(checkboxId).checked) {
             map.addLayer(layerObject);
-
         } else {
-
             map.removeLayer(layerObject);
-
         }
     }
-
-
-    // ============================================================
-    // Waktu WIT
-    // ============================================================
 
     function getWaktuWIT() {
-
         const now = new Date();
-
-        const witString = now.toLocaleString(
-            "en-US",
-            {
-                timeZone: "Asia/Jayapura"
-            }
-        );
-
-        return new Date(witString);
+        const witString = now.toLocaleString("en-US", { timeZone: "Asia/Jayapura" });
+        return new Date(witString); 
     }
-
 
     function perbaruiLabelWaktu() {
-
-        const now = getWaktuWIT();
-
-        const jam = String(
-            now.getHours()
-        ).padStart(2, '0');
-
-        const menit = String(
-            now.getMinutes()
-        ).padStart(2, '0');
-
-        const detik = String(
-            now.getSeconds()
-        ).padStart(2, '0');
-
-
-        const label =
-            document.getElementById(
-                'labelWaktuUpdate'
-            );
-
-
-        label.innerText =
-            `Terakhir ditarik: ${jam}:${menit}:${detik} WIT`;
-
-
+        const now = getWaktuWIT(); 
+        const jam = String(now.getHours()).padStart(2, '0');
+        const menit = String(now.getMinutes()).padStart(2, '0');
+        const detik = String(now.getSeconds()).padStart(2, '0');
+        
+        const label = document.getElementById('labelWaktuUpdate');
+        label.innerText = `Terakhir ditarik: ${jam}:${menit}:${detik} WIT`;
+        
         label.style.color = "#ffffff";
-
-
-        setTimeout(() => {
-
-            const isLight =
-                document.body.classList.contains(
-                    'light-mode'
-                );
-
-            label.style.color =
-                isLight
-                    ? "#00802b"
-                    : "#00ff66";
-
+        setTimeout(() => { 
+            const isLight = document.body.classList.contains('light-mode');
+            label.style.color = isLight ? "#00802b" : "#00ff66"; 
         }, 500);
     }
-
-
+    
     perbaruiLabelWaktu();
 
-
     setInterval(() => {
-
         const ts = new Date().getTime();
-
-
-        if (radarLayer) {
-
-            radarLayer.setUrl(
-                'https://stamet-sentani.bmkg.go.id/radar/sidarma?t='
-                + ts
-            );
-
-        }
-
-
-        if (satelitRegion5) {
-
-            satelitRegion5.setUrl(
-                'https://stamet-sentani.bmkg.go.id/radar/satellite-animation.gif?t='
-                + ts
-            );
-
-        }
-
-
+        if (radarLayer) radarLayer.setUrl("https://stamet-sentani.bmkg.go.id/radar/sidarma?t=" + ts);
+        if (satelitRegion5) satelitRegion5.setUrl("https://stamet-sentani.bmkg.go.id/radar/satellite-animation.gif?t=" + ts);
         perbaruiLabelWaktu();
-
     }, 300000);
 
-
-    // ============================================================
     // Load Data GeoJSON Kecamatan + Auto Center
-    // ============================================================
-
     fetch('jyp kec.geojson')
-
         .then(res => res.json())
-
         .then(data => {
-
-            geojsonLayer = L.geoJSON(
-                data,
-                {
-
-                    style: () => ({
-
-                        fillColor: '#3186cc',
-                        weight: 1.5,
-                        color: '#ffffff',
-                        fillOpacity: 0.3
-
-                    }),
-
-
-                    onEachFeature:
-                        (feature, layer) => {
-
-                            const namaKec =
-                                feature.properties.KECAMATAN;
-
-
-                            layer.bindTooltip(
-                                namaKec
-                            );
-
-
-                            layer.on(
-                                'click',
-                                () => {
-
-                                    if (
-                                        currentMode ===
-                                        'utama'
-                                    ) {
-
-                                        wilayahLuas =
-                                            wilayahLuas.filter(
-                                                k => k !== namaKec
-                                            );
-
-
-                                        if (
-                                            !wilayahUtama.includes(
-                                                namaKec
-                                            )
-                                        ) {
-
-                                            wilayahUtama.push(
-                                                namaKec
-                                            );
-
-                                        }
-
-                                    } else {
-
-                                        wilayahUtama =
-                                            wilayahUtama.filter(
-                                                k => k !== namaKec
-                                            );
-
-
-                                        if (
-                                            !wilayahLuas.includes(
-                                                namaKec
-                                            )
-                                        ) {
-
-                                            wilayahLuas.push(
-                                                namaKec
-                                            );
-
-                                        }
-
-                                    }
-
-
-                                    updateMapStyles();
-
-                                    generateText();
-
-                                }
-                            );
-
+            geojsonLayer = L.geoJSON(data, {
+                style: () => ({ fillColor: '#3186cc', weight: 1.5, color: '#ffffff', fillOpacity: 0.3 }),
+                onEachFeature: (feature, layer) => {
+                    const namaKec = feature.properties.KECAMATAN;
+                    layer.bindTooltip(namaKec);
+                    
+                    layer.on('click', () => {
+                        if (currentMode === 'utama') {
+                            wilayahLuas = wilayahLuas.filter(k => k !== namaKec);
+                            if (!wilayahUtama.includes(namaKec)) wilayahUtama.push(namaKec);
+                        } else {
+                            wilayahUtama = wilayahUtama.filter(k => k !== namaKec);
+                            if (!wilayahLuas.includes(namaKec)) wilayahLuas.push(namaKec);
                         }
-
+                        updateMapStyles();
+                        generateText();
+                    });
                 }
-            ).addTo(map);
-
-
+            }).addTo(map);
+            
             geojsonLayer.bringToFront();
-
-            map.fitBounds(
-                geojsonLayer.getBounds()
-            );
-
+            map.fitBounds(geojsonLayer.getBounds());
         });
 
-
-    // ============================================================
-    // Mode Klik Peta
-    // ============================================================
-
     function setMode(mode) {
-
         currentMode = mode;
-
-
-        document.getElementById(
-            'btnUtama'
-        ).classList.toggle(
-            'active',
-            mode === 'utama'
-        );
-
-
-        document.getElementById(
-            'btnLuas'
-        ).classList.toggle(
-            'active',
-            mode === 'luas'
-        );
+        document.getElementById('btnUtama').classList.toggle('active', mode === 'utama');
+        document.getElementById('btnLuas').classList.toggle('active', mode === 'luas');
     }
-
-
-    // ============================================================
-    // Update Warna Peta
-    // ============================================================
 
     function updateMapStyles() {
-
-        geojsonLayer.eachLayer(
-            layer => {
-
-                const namaKec =
-                    layer.feature.properties.KECAMATAN;
-
-
-                if (
-                    wilayahUtama.includes(
-                        namaKec
-                    )
-                ) {
-
-                    layer.setStyle({
-
-                        fillColor: 'red',
-                        fillOpacity: 0.7,
-                        color: 'black'
-
-                    });
-
-                } else if (
-                    wilayahLuas.includes(
-                        namaKec
-                    )
-                ) {
-
-                    layer.setStyle({
-
-                        fillColor: 'yellow',
-                        fillOpacity: 0.7,
-                        color: 'black'
-
-                    });
-
-                } else {
-
-                    layer.setStyle({
-
-                        fillColor: '#3186cc',
-                        fillOpacity: 0.3,
-                        color: '#ffffff'
-
-                    });
-
-                }
-
+        geojsonLayer.eachLayer(layer => {
+            const namaKec = layer.feature.properties.KECAMATAN;
+            if (wilayahUtama.includes(namaKec)) {
+                layer.setStyle({ fillColor: 'red', fillOpacity: 0.7, color: 'black' });
+            } else if (wilayahLuas.includes(namaKec)) {
+                layer.setStyle({ fillColor: 'yellow', fillOpacity: 0.7, color: 'black' });
+            } else {
+                layer.setStyle({ fillColor: '#3186cc', fillOpacity: 0.3, color: '#ffffff' });
             }
-        );
+        });
     }
-
-
-    // ============================================================
-    // Waktu
-    // ============================================================
 
     function setInitialTime() {
-
-        const now = getWaktuWIT();
-
-
-        document.getElementById(
-            'waktuRilis'
-        ).value =
-            formatTimeInput(now);
-
-
-        const berlaku =
-            new Date(
-                now.getTime() +
-                10 * 60000
-            );
-
-
-        document.getElementById(
-            'waktuBerlaku'
-        ).value =
-            formatTimeInput(berlaku);
-
-
-        const selesai =
-            new Date(
-                berlaku.getTime() +
-                120 * 60000
-            );
-
-
-        document.getElementById(
-            'waktuSelesai'
-        ).value =
-            formatTimeInput(selesai);
+        const now = getWaktuWIT(); 
+        document.getElementById('waktuRilis').value = formatTimeInput(now);
+        
+        const berlaku = new Date(now.getTime() + 10 * 60000);
+        document.getElementById('waktuBerlaku').value = formatTimeInput(berlaku);
+        
+        const selesai = new Date(berlaku.getTime() + 120 * 60000);
+        document.getElementById('waktuSelesai').value = formatTimeInput(selesai);
     }
 
-
     function formatTimeInput(date) {
-
-        const h =
-            String(
-                date.getHours()
-            ).padStart(2, '0');
-
-
-        const m =
-            String(
-                date.getMinutes()
-            ).padStart(2, '0');
-
-
+        const h = String(date.getHours()).padStart(2, '0');
+        const m = String(date.getMinutes()).padStart(2, '0');
         return `${h}:${m}`;
     }
 
-
     function updateWaktuOtomatis() {
-
-        const rilisVal =
-            document.getElementById(
-                'waktuRilis'
-            ).value;
-
-
+        const rilisVal = document.getElementById('waktuRilis').value;
         if (!rilisVal) return;
-
-
-        const [h, m] =
-            rilisVal
-                .split(':')
-                .map(Number);
-
-
-        const berlaku =
-            getWaktuWIT();
-
-
-        berlaku.setHours(
-            h,
-            m + 10,
-            0,
-            0
-        );
-
-
-        document.getElementById(
-            'waktuBerlaku'
-        ).value =
-            formatTimeInput(berlaku);
-
-
+        const [h, m] = rilisVal.split(':').map(Number);
+        const berlaku = getWaktuWIT();
+        berlaku.setHours(h, m + 10, 0, 0);
+        document.getElementById('waktuBerlaku').value = formatTimeInput(berlaku);
         updateEstimasiSelesai();
     }
 
-
     function updateEstimasiSelesai() {
-
-        const berlakuVal =
-            document.getElementById(
-                'waktuBerlaku'
-            ).value;
-
-
+        const berlakuVal = document.getElementById('waktuBerlaku').value;
         if (!berlakuVal) return;
-
-
-        const [h, m] =
-            berlakuVal
-                .split(':')
-                .map(Number);
-
-
-        const berlaku =
-            getWaktuWIT();
-
-
-        berlaku.setHours(
-            h,
-            m,
-            0,
-            0
-        );
-
-
-        const selesai =
-            new Date(
-                berlaku.getTime() +
-                120 * 60000
-            );
-
-
-        document.getElementById(
-            'waktuSelesai'
-        ).value =
-            formatTimeInput(selesai);
-
-
+        const [h, m] = berlakuVal.split(':').map(Number);
+        const berlaku = getWaktuWIT();
+        berlaku.setHours(h, m, 0, 0);
+        const selesai = new Date(berlaku.getTime() + 120 * 60000);
+        document.getElementById('waktuSelesai').value = formatTimeInput(selesai);
         generateText();
     }
 
-
     function formatJamDot(timeStr) {
-
-        if (!timeStr)
-            return '00.00';
-
-
-        return timeStr.replace(
-            ':',
-            '.'
-        );
+        if (!timeStr) return '00.00';
+        return timeStr.replace(':', '.');
     }
 
-
-    // ============================================================
-    // Generate Teks Peringatan
-    // ============================================================
-
     function generateText() {
+        const jenis = document.getElementById('jenisPeringatan').value;
+        const rilisStr = document.getElementById('waktuRilis').value;
+        const berlakuStr = document.getElementById('waktuBerlaku').value;
+        const selesaiStr = document.getElementById('waktuSelesai').value;
 
-        const jenis =
-            document.getElementById(
-                'jenisPeringatan'
-            ).value;
+        const strUtama = wilayahUtama.length ? wilayahUtama.join(', ') : '...';
+        const strLuas = wilayahLuas.length ? wilayahLuas.join(', ') : '...';
 
-
-        const rilisStr =
-            document.getElementById(
-                'waktuRilis'
-            ).value;
-
-
-        const berlakuStr =
-            document.getElementById(
-                'waktuBerlaku'
-            ).value;
-
-
-        const selesaiStr =
-            document.getElementById(
-                'waktuSelesai'
-            ).value;
-
-
-        const strUtama =
-            wilayahUtama.length
-                ? wilayahUtama.join(', ')
-                : '...';
-
-
-        const strLuas =
-            wilayahLuas.length
-                ? wilayahLuas.join(', ')
-                : '...';
-
-
-        const bulanIndo = [
-
-            "Januari",
-            "Februari",
-            "Maret",
-            "April",
-            "Mei",
-            "Juni",
-            "Juli",
-            "Agustus",
-            "September",
-            "Oktober",
-            "November",
-            "Desember"
-
-        ];
-
-
-        const dateRilis =
-            getWaktuWIT();
-
-
+        const bulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        
+        const dateRilis = getWaktuWIT();
         if (rilisStr) {
-
-            const [h, m] =
-                rilisStr
-                    .split(':')
-                    .map(Number);
-
-
-            dateRilis.setHours(
-                h,
-                m,
-                0,
-                0
-            );
+            const [h, m] = rilisStr.split(':').map(Number);
+            dateRilis.setHours(h, m, 0, 0);
         }
 
-
-        const dateBerlaku =
-            new Date(dateRilis);
-
-
+        const dateBerlaku = new Date(dateRilis);
         if (berlakuStr) {
-
-            const [h, m] =
-                berlakuStr
-                    .split(':')
-                    .map(Number);
-
-
-            dateBerlaku.setHours(
-                h,
-                m,
-                0,
-                0
-            );
-
-
-            if (
-                dateBerlaku < dateRilis &&
-                (
-                    dateRilis.getHours() -
-                    dateBerlaku.getHours()
-                    > 12
-                )
-            ) {
-
-                dateBerlaku.setDate(
-                    dateBerlaku.getDate() + 1
-                );
-
+            const [h, m] = berlakuStr.split(':').map(Number);
+            dateBerlaku.setHours(h, m, 0, 0);
+            if (dateBerlaku < dateRilis && (dateRilis.getHours() - dateBerlaku.getHours() > 12)) {
+                dateBerlaku.setDate(dateBerlaku.getDate() + 1);
             }
         }
 
-
-        const dateSelesai =
-            new Date(dateBerlaku);
-
-
+        const dateSelesai = new Date(dateBerlaku);
         if (selesaiStr) {
-
-            const [h, m] =
-                selesaiStr
-                    .split(':')
-                    .map(Number);
-
-
-            dateSelesai.setHours(
-                h,
-                m,
-                0,
-                0
-            );
-
-
-            if (
-                dateSelesai <= dateBerlaku
-            ) {
-
-                dateSelesai.setDate(
-                    dateSelesai.getDate() + 1
-                );
-
+            const [h, m] = selesaiStr.split(':').map(Number);
+            dateSelesai.setHours(h, m, 0, 0);
+            if (dateSelesai <= dateBerlaku) {
+                dateSelesai.setDate(dateSelesai.getDate() + 1);
             }
         }
 
+        const tglRilisStr = `${dateRilis.getDate()} ${bulanIndo[dateRilis.getMonth()]} ${dateRilis.getFullYear()}`;
+        const tglSelesaiStr = `${dateSelesai.getDate()} ${bulanIndo[dateSelesai.getMonth()]} ${dateSelesai.getFullYear()}`;
 
-        const tglRilisStr =
-            `${dateRilis.getDate()} ${
-                bulanIndo[dateRilis.getMonth()]
-            } ${
-                dateRilis.getFullYear()
-            }`;
+        const rilisFormatted = formatJamDot(rilisStr);
+        const berlakuFormatted = formatJamDot(berlakuStr);
+        const selesaiFormatted = formatJamDot(selesaiStr);
 
+        const judulHeader = jenis === 'update' ? 'Update Peringatan Dini Cuaca Kabupaten Jayapura' : 'Peringatan Dini Cuaca Kabupaten Jayapura';
+        const frasaPotensi = jenis === 'update' ? 'Masih berpotensi terjadi' : 'Berpotensi terjadi';
 
-        const tglSelesaiStr =
-            `${dateSelesai.getDate()} ${
-                bulanIndo[dateSelesai.getMonth()]
-            } ${
-                dateSelesai.getFullYear()
-            }`;
-
-
-        const rilisFormatted =
-            formatJamDot(rilisStr);
-
-
-        const berlakuFormatted =
-            formatJamDot(berlakuStr);
-
-
-        const selesaiFormatted =
-            formatJamDot(selesaiStr);
-
-
-        const judulHeader =
-            jenis === 'update'
-                ? 'Update Peringatan Dini Cuaca Kabupaten Jayapura'
-                : 'Peringatan Dini Cuaca Kabupaten Jayapura';
-
-
-        const frasaPotensi =
-            jenis === 'update'
-                ? 'Masih berpotensi terjadi'
-                : 'Berpotensi terjadi';
-
-
-        document.getElementById(
-            'teksHasil'
-        ).value =
-
+        document.getElementById('teksHasil').value = 
 `${judulHeader}
 Tanggal ${tglRilisStr} pukul ${rilisFormatted} WIT
 ${frasaPotensi} hujan dengan intensitas sedang hingga lebat pada pukul ${berlakuFormatted} WIT di Kabupaten Jayapura: ${strUtama} dan Sekitarnya.
@@ -1146,63 +349,23 @@ Kondisi ini diperkirakan masih akan berlangsung hingga Tanggal ${tglSelesaiStr} 
 Prakirawan - BMKG Sentani https://bmkg.go.id`;
     }
 
-
-    // ============================================================
-    // Reset
-    // ============================================================
-
     function resetSelection() {
-
         wilayahUtama = [];
-
         wilayahLuas = [];
-
         updateMapStyles();
-
         generateText();
     }
 
-
-    // ============================================================
-    // Copy Teks
-    // ============================================================
-
     function copyToClipboard() {
-
-        const copyText =
-            document.getElementById(
-                "teksHasil"
-            );
-
-
+        const copyText = document.getElementById("teksHasil");
         copyText.select();
-
-        copyText.setSelectionRange(
-            0,
-            99999
-        );
-
-
-        navigator.clipboard.writeText(
-            copyText.value
-        );
-
-
-        alert(
-            "Teks peringatan dini berhasil disalin!"
-        );
+        copyText.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(copyText.value);
+        alert("Teks peringatan dini berhasil disalin!");
     }
 
-
-    // ============================================================
-    // Jalankan Awal
-    // ============================================================
-
     setInitialTime();
-
     generateText();
-
 </script>
-
 </body>
 </html>
