@@ -9,51 +9,17 @@
         body { margin: 0; padding: 20px; font-family: Arial, sans-serif; display: flex; gap: 20px; background: #121212; color: #fff; transition: background 0.3s, color 0.3s; }
         #map { width: 60%; height: 92vh; border-radius: 8px; }
         #panel { width: 40%; display: flex; flex-direction: column; gap: 10px; }
-        textarea { width: 100%; height: 210px; background: #1e1e1e; color: #00ff66; border: 1px solid #444; border-radius: 5px; padding: 10px; font-family: monospace; font-size: 13px; box-sizing: border-box; transition: background 0.3s, color 0.3s; }
-        
-        /* Tombol Mode Klik Peta */
-        .mode-container { display: flex; gap: 10px; margin-top: 4px; }
-        .mode-btn { 
-            padding: 10px 8px; 
-            border: 2px solid transparent; 
-            cursor: pointer; 
-            border-radius: 6px; 
-            font-weight: bold; 
-            flex: 1; 
-            transition: all 0.25s ease;
-            opacity: 0.40;
-            filter: grayscale(30%);
-        }
-        .btn-utama { background: #ff3333; color: white; }
-        .btn-luas { background: #ffc400; color: black; }
-        
-        /* Gaya saat tombol terpilih / AKTIF */
-        .mode-btn.active { 
-            opacity: 1 !important; 
-            filter: none !important;
-            transform: scale(1.02);
-            box-shadow: 0 0 0 3px #008cba, 0 4px 12px rgba(0,0,0,0.3);
-            border-color: #ffffff;
-        }
-        body.light-mode .mode-btn.active {
-            box-shadow: 0 0 0 3px #005a7a, 0 4px 10px rgba(0,0,0,0.2);
-            border-color: #ffffff;
-        }
-
-        .active-mode-label {
-            font-size: 11px;
-            font-weight: bold;
-            color: #ff4d4d;
-            margin-left: 5px;
-            transition: color 0.2s;
-        }
-
+        textarea { width: 100%; height: 230px; background: #1e1e1e; color: #00ff66; border: 1px solid #444; border-radius: 5px; padding: 10px; font-family: monospace; font-size: 13px; box-sizing: border-box; transition: background 0.3s, color 0.3s; }
+        .mode-btn { padding: 8px; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; width: 48%; transition: all 0.2s; opacity: 0.45; }
+        .btn-utama { background: #ff4d4d; color: white; }
+        .btn-luas { background: #ffcc00; color: black; }
+        .mode-btn.active { opacity: 1; transform: scale(1.02); box-shadow: 0 0 0 3px #008cba; }
         .grid-time { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
         input[type="time"], select { padding: 6px; border-radius: 5px; border: 1px solid #444; background: #222; color: white; width: 100%; box-sizing: border-box; transition: background 0.3s, color 0.3s; }
         label { font-size: 12px; color: #ccc; }
-        .action-btn { padding: 9px; background: #333; color: white; border: 1px solid #555; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; box-sizing: border-box; transition: background 0.2s; }
+        .action-btn { padding: 8px; background: #333; color: white; border: 1px solid #555; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .action-btn:hover { background: #444; }
-        .btn-copy { background: #008cba; border: none; font-size: 13px; padding: 11px; }
+        .btn-copy { background: #008cba; border: none; padding: 10px; font-size: 14px; width: 100%; }
         .btn-copy:hover { background: #007399; }
         .layer-box { background: #1e1e1e; padding: 10px; border-radius: 5px; border: 1px solid #333; font-size: 12px; display: flex; flex-direction: column; gap: 8px; transition: background 0.3s; }
         .layer-row { display: flex; justify-content: space-between; align-items: center; }
@@ -72,7 +38,6 @@
         }
         .waktu-teks { font-weight: bold; color: #00ff66; }
 
-        /* Mode Terang (Default) */
         body.light-mode { background: #eef2f5; color: #111; }
         body.light-mode .layer-box, 
         body.light-mode .status-update { background: #ffffff; border-color: #ccc; color: #222; }
@@ -83,7 +48,6 @@
         body.light-mode .action-btn { background: #e0e0e0; color: #111; border-color: #bbb; }
         body.light-mode .action-btn:hover { background: #d0d0d0; }
         body.light-mode .btn-copy { background: #008cba; color: #fff; }
-        body.light-mode .btn-copy:hover { background: #007399; }
 
         .btn-theme {
             background: #333; color: #fff; border: 1px solid #555;
@@ -137,34 +101,44 @@
     </div>
 
     <div>
-        <label>Mode Klik Peta: <span id="labelModeAktif" class="active-mode-label">● Wilayah Utama Aktif</span></label>
-        <div class="mode-container">
-            <button id="btnUtama" class="mode-btn btn-utama active" onclick="setMode('utama')">Wilayah Utama (Merah)</button>
-            <button id="btnLuas" class="mode-btn btn-luas" onclick="setMode('luas')">Perluasan (Kuning)</button>
+        <label style="font-weight: bold; color: #d9534f;">Kondisi Cuaca (Wajib Dipilih):</label>
+        <select id="kondisiCuaca" onchange="generateText()" style="border-color: #d9534f;">
+            <option value="">-- Pilih Kondisi Cuaca Dahulu --</option>
+            <option value="sedang_lebat">Hujan Sedang - Lebat</option>
+            <option value="petir_angin">Hujan Sedang - Lebat disertai Kilat/Petir & Angin Kencang</option>
+        </select>
+    </div>
+
+    <div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <label>Mode Klik Peta:</label>
+            <span id="indikatorMode" style="font-size: 11px; font-weight: bold; color: #d9534f;">● Mode: Wilayah Utama (Merah)</span>
         </div>
+        <button id="btnUtama" class="mode-btn btn-utama active" onclick="setMode('utama')">Wilayah Utama (Merah)</button>
+        <button id="btnLuas" class="mode-btn btn-luas" onclick="setMode('luas')">Perluasan (Kuning)</button>
     </div>
 
     <div class="grid-time">
         <div>
             <label>Waktu Rilis:</label>
-            <input type="time" id="waktuRilis" onchange="markManualTime(); updateWaktuOtomatis();">
+            <input type="time" id="waktuRilis" onchange="handleManualTimeChange('rilis')">
         </div>
         <div>
             <label>Waktu Berlaku:</label>
-            <input type="time" id="waktuBerlaku" onchange="markManualTime(); updateEstimasiSelesai();">
+            <input type="time" id="waktuBerlaku" onchange="handleManualTimeChange('berlaku')">
         </div>
         <div>
             <label>Estimasi Selesai:</label>
-            <input type="time" id="waktuSelesai" onchange="markManualTime(); generateText();">
+            <input type="time" id="waktuSelesai" onchange="handleManualTimeChange('selesai')">
         </div>
     </div>
 
-    <button onclick="resetSelection()" class="action-btn">🔄 Reset Pilihan Peta</button>
+    <div>
+        <button onclick="resetSelection()" class="action-btn" style="width: 100%;">🔄 Reset Pilihan Peta</button>
+    </div>
 
     <h3 style="margin: 5px 0 0 0;">Format Teks Siap Rilis:</h3>
     <textarea id="teksHasil" readonly></textarea>
-    
-    <!-- Tombol Salin Teks Tepat di Bawah Textarea -->
     <button onclick="copyToClipboard()" class="action-btn btn-copy">📋 Salin Teks Peringatan</button>
 </div>
 
@@ -238,7 +212,6 @@
         perbaruiLabelWaktu();
     }, 300000);
 
-    // Fungsi Pembaca Nama Distrik (Mendukung GADM NAME_3 & KECAMATAN)
     function getNamaKecamatan(feature) {
         const p = feature.properties;
         return p.NAME_3 || p.KECAMATAN || p.NAME_2 || p.WADMKC || "Tanpa Nama";
@@ -254,6 +227,13 @@
                     layer.bindTooltip(namaKec);
                     
                     layer.on('click', () => {
+                        const kondisi = document.getElementById('kondisiCuaca').value;
+                        if (!kondisi) {
+                            alert("Peringatan: Silakan pilih 'Kondisi Cuaca' terlebih dahulu sebelum memilih distrik pada peta!");
+                            document.getElementById('kondisiCuaca').focus();
+                            return;
+                        }
+
                         if (currentMode === 'utama') {
                             wilayahLuas = wilayahLuas.filter(k => k !== namaKec);
                             if (!wilayahUtama.includes(namaKec)) wilayahUtama.push(namaKec);
@@ -273,19 +253,16 @@
 
     function setMode(mode) {
         currentMode = mode;
-        const btnUtama = document.getElementById('btnUtama');
-        const btnLuas = document.getElementById('btnLuas');
-        const lblMode = document.getElementById('labelModeAktif');
-
-        btnUtama.classList.toggle('active', mode === 'utama');
-        btnLuas.classList.toggle('active', mode === 'luas');
-
+        document.getElementById('btnUtama').classList.toggle('active', mode === 'utama');
+        document.getElementById('btnLuas').classList.toggle('active', mode === 'luas');
+        
+        const labelMode = document.getElementById('indikatorMode');
         if (mode === 'utama') {
-            lblMode.innerText = '● Wilayah Utama Aktif';
-            lblMode.style.color = '#ff3333';
+            labelMode.innerText = "● Mode: Wilayah Utama (Merah)";
+            labelMode.style.color = "#d9534f";
         } else {
-            lblMode.innerText = '● Wilayah Perluasan Aktif';
-            lblMode.style.color = '#ff9900';
+            labelMode.innerText = "● Mode: Perluasan (Kuning)";
+            labelMode.style.color = "#e6a800";
         }
     }
 
@@ -302,10 +279,6 @@
         });
     }
 
-    function markManualTime() {
-        isManualTime = true;
-    }
-
     function setInitialTime() {
         const now = getWaktuWIT(); 
         document.getElementById('waktuRilis').value = formatTimeInput(now);
@@ -318,10 +291,27 @@
         generateText();
     }
 
+    setInterval(() => {
+        if (!isManualTime) {
+            setInitialTime();
+        }
+    }, 30000);
+
     function formatTimeInput(date) {
         const h = String(date.getHours()).padStart(2, '0');
         const m = String(date.getMinutes()).padStart(2, '0');
         return `${h}:${m}`;
+    }
+
+    function handleManualTimeChange(type) {
+        isManualTime = true;
+        if (type === 'rilis') {
+            updateWaktuOtomatis();
+        } else if (type === 'berlaku') {
+            updateEstimasiSelesai();
+        } else {
+            generateText();
+        }
     }
 
     function updateWaktuOtomatis() {
@@ -352,9 +342,17 @@
 
     function generateText() {
         const jenis = document.getElementById('jenisPeringatan').value;
+        const kondisi = document.getElementById('kondisiCuaca').value;
         const rilisStr = document.getElementById('waktuRilis').value;
         const berlakuStr = document.getElementById('waktuBerlaku').value;
         const selesaiStr = document.getElementById('waktuSelesai').value;
+
+        let frasaCuaca = "[PILIH KONDISI CUACA TERLEBIH DAHULU]";
+        if (kondisi === 'sedang_lebat') {
+            frasaCuaca = "hujan dengan intensitas sedang hingga lebat";
+        } else if (kondisi === 'petir_angin') {
+            frasaCuaca = "hujan dengan intensitas sedang hingga lebat yang dapat disertai kilat/petir dan angin kencang";
+        }
 
         const strUtama = wilayahUtama.length ? wilayahUtama.join(', ') : '...';
         const strLuas = wilayahLuas.length ? wilayahLuas.join(', ') : '...';
@@ -398,7 +396,7 @@
         document.getElementById('teksHasil').value = 
 `${judulHeader}
 Tanggal ${tglRilisStr} pukul ${rilisFormatted} WIT
-${frasaPotensi} hujan dengan intensitas sedang hingga lebat pada pukul ${berlakuFormatted} WIT di Kabupaten Jayapura: ${strUtama} dan Sekitarnya.
+${frasaPotensi} ${frasaCuaca} pada pukul ${berlakuFormatted} WIT di Kabupaten Jayapura: ${strUtama} dan Sekitarnya.
 Dan dapat meluas ke wilayah Kabupaten Jayapura: ${strLuas} dan Sekitarnya.
 Kondisi ini diperkirakan masih akan berlangsung hingga Tanggal ${tglSelesaiStr} pukul ${selesaiFormatted} WIT.
 
@@ -422,14 +420,6 @@ Prakirawan - BMKG Sentani https://bmkg.go.id`;
     }
 
     setInitialTime();
-
-    // Waktu terus berjalan otomatis realtime setiap 30 detik (bahkan saat distrik sudah dipilih),
-    // KECUALI jika pengguna pernah mengedit input jam secara manual.
-    setInterval(() => {
-        if (!isManualTime) {
-            setInitialTime();
-        }
-    }, 30000);
 </script>
 </body>
 </html>
