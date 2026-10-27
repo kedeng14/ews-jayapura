@@ -74,16 +74,25 @@
 
     <div class="layer-box">
         <div class="layer-row">
-            <span style="font-weight: bold; color: #00ff66;">1. Radar Jayapura (CMAX):</span>
+            <span style="font-weight: bold; color: #00aaff;">1. Radar Lokal (EEC Edge):</span>
             <div class="layer-controls">
-                <input type="checkbox" id="chkRadar" checked onchange="toggleLayer(radarLayer, 'chkRadar')">
+                <input type="checkbox" id="chkRadarEEC" checked onchange="toggleLayer(radarLokalEEC, 'chkRadarEEC')">
+                <label for="chkRadarEEC">Tampil</label>
+                <input type="range" min="0.1" max="1" step="0.1" value="0.75" oninput="radarLokalEEC.setOpacity(this.value)" style="width: 70px;">
+            </div>
+        </div>
+
+        <div class="layer-row">
+            <span style="font-weight: bold; color: #00ff66;">2. Radar Jayapura (CMAX):</span>
+            <div class="layer-controls">
+                <input type="checkbox" id="chkRadar" onchange="toggleLayer(radarLayer, 'chkRadar')">
                 <label for="chkRadar">Tampil</label>
                 <input type="range" min="0.1" max="1" step="0.1" value="0.75" oninput="radarLayer.setOpacity(this.value)" style="width: 70px;">
             </div>
         </div>
 
         <div class="layer-row">
-            <span style="font-weight: bold; color: #ffcc00;">2. Satelit Region 5 (GIF):</span>
+            <span style="font-weight: bold; color: #ffcc00;">3. Satelit Region 5 (GIF):</span>
             <div class="layer-controls">
                 <input type="checkbox" id="chkRegion5" checked onchange="toggleLayer(satelitRegion5, 'chkRegion5')">
                 <label for="chkRegion5">Tampil</label>
@@ -147,6 +156,7 @@
     let wilayahUtama = [];
     let wilayahLuas = [];
     let geojsonLayer;
+    let radarLokalEEC;
     let radarLayer;
     let satelitRegion5;
     let isManualTime = false;
@@ -165,9 +175,13 @@
     const boundsRadarJayapura = [[-4.823000, 138.235000], [-0.323000, 142.735000]];
     const boundsSatelitRegion5 = [[-15.394000, 129.963000], [5.348000, 150.005000]];
 
-    radarLayer = L.imageOverlay("https://stamet-sentani.bmkg.go.id/radar/sidarma?t=" + new Date().getTime(), boundsRadarJayapura, {
+    radarLokalEEC = L.imageOverlay("https://stamet-sentani.bmkg.go.id/radar/latest-image.png?t=" + new Date().getTime(), boundsRadarJayapura, {
         opacity: 0.75, interactive: false
     }).addTo(map);
+
+    radarLayer = L.imageOverlay("https://stamet-sentani.bmkg.go.id/radar/sidarma?t=" + new Date().getTime(), boundsRadarJayapura, {
+        opacity: 0.75, interactive: false
+    }); 
 
     satelitRegion5 = L.imageOverlay("https://stamet-sentani.bmkg.go.id/radar/satellite-animation.gif?t=" + new Date().getTime(), boundsSatelitRegion5, {
         opacity: 0.50, interactive: false
@@ -207,6 +221,7 @@
 
     setInterval(() => {
         const ts = new Date().getTime();
+        if (radarLokalEEC) radarLokalEEC.setUrl("https://stamet-sentani.bmkg.go.id/radar/latest-image.png?t=" + ts);
         if (radarLayer) radarLayer.setUrl("https://stamet-sentani.bmkg.go.id/radar/sidarma?t=" + ts);
         if (satelitRegion5) satelitRegion5.setUrl("https://stamet-sentani.bmkg.go.id/radar/satellite-animation.gif?t=" + ts);
         perbaruiLabelWaktu();
