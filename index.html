@@ -68,7 +68,7 @@
     </div>
     
     <div class="status-update">
-        <span>Status Data Layer:</span>
+        <span>Status Data Layer (Otomatis tiap 5 menit):</span>
         <span id="labelWaktuUpdate" class="waktu-teks">Memuat sinkronisasi awal...</span>
     </div>
 
@@ -435,6 +435,17 @@ Prakirawan - BMKG Sentani https://bmkg.go.id`;
     }
 
     setInitialTime();
+
+    // Memperbarui data secara instan saat tab kembali dibuka/dilihat
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+            const ts = new Date().getTime();
+            if (radarLokalEEC) radarLokalEEC.setUrl("https://stamet-sentani.bmkg.go.id/radar/latest-image.png?t=" + ts);
+            if (radarLayer) radarLayer.setUrl("https://stamet-sentani.bmkg.go.id/radar/sidarma?t=" + ts);
+            if (satelitRegion5) satelitRegion5.setUrl("https://stamet-sentani.bmkg.go.id/radar/satellite-animation.gif?t=" + ts);
+            perbaruiLabelWaktu();
+        }
+    });
 </script>
 </body>
 </html>
